@@ -1,4 +1,4 @@
-# Sample Projects Repository
+# Samples
 
 Welcome to my sample projects repository! This collection contains various code samples and examples that I use in my technical content creation.
 
