@@ -26,17 +26,20 @@ var mcpTools = await mcpClient.ListToolsAsync().ConfigureAwait(false);
 Console.WriteLine($"✅ Found {mcpTools.Count} tools from MCP Server:");
 foreach (var tool in mcpTools)
 {
-    Console.WriteLine($"   • {tool.Name}");
+    Console.WriteLine($"   • {tool.Name}: {tool.Description}");
 }
 
 //3. Create ChatClient
-var baseUrl = "https://models.inference.ai.azure.com";
+var baseUrl = "https://api.openai.com/v1/";
 var apiKey = configuration["OpenAI:ApiKey"];
 
-var chatClient = new AzureOpenAIClient(
-    new Uri(baseUrl),
-    new ApiKeyCredential(apiKey!)
-).GetChatClient("gpt-4o-mini");
+var chatClient = new OpenAIClient(
+    new ApiKeyCredential(apiKey!),
+    new OpenAIClientOptions
+    {
+        Endpoint = new Uri(baseUrl),
+    }
+).GetChatClient("gpt-5");
 
 //4. Create AI Agent
 AIAgent agent = chatClient.CreateAIAgent(
@@ -54,14 +57,15 @@ Console.WriteLine("════════════════════�
 
 try
 {
-    AgentThread thread = agent.GetNewThread();
-    // thread = null; //makes the agent forget the conversation history!
+    AgentThread agentThread = agent.GetNewThread();
+    agentThread = null; //makes the agent forget the conversation history!
 
-    var result = await agent.RunAsync("Summarize the last commit of the abpframework/abp repository", thread);
+    var result = await agent.RunAsync("Summarize the last commit of the abpframework/abp repository!", agentThread);
     Console.WriteLine(result.Text);
 
+    Console.WriteLine();
     Console.WriteLine("Last commit author: ");
-    var result2 = await agent.RunAsync("Who is the last commit author of the abpframework/abp repository? Answer without tool call!", thread);
+    var result2 = await agent.RunAsync("Who is the last commit author of the abpframework/abp repository? Answer without tool call!", agentThread);
     Console.WriteLine(result2.Text);
 }
 catch (Exception ex)

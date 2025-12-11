@@ -10,13 +10,16 @@ var configuration = new ConfigurationBuilder()
     .AddUserSecrets<Program>() // Loads user secrets
     .Build();
 
-var baseUrl = "https://models.inference.ai.azure.com";
+var baseUrl = "https://api.openai.com/v1/";
 var apiKey = configuration["OpenAI:ApiKey"];
 
-var chatClient = new AzureOpenAIClient(
-    new Uri(baseUrl),
-    new ApiKeyCredential(apiKey!)
-).GetChatClient("gpt-4o-mini");
+var chatClient = new OpenAIClient(
+    new ApiKeyCredential(apiKey!),
+    new OpenAIClientOptions
+    {
+        Endpoint = new Uri(baseUrl),
+    }
+).GetChatClient("gpt-5");
 
 //1. Writer Agent
 AIAgent writerAgent = chatClient.CreateAIAgent(
