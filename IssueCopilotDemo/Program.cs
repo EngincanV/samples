@@ -54,7 +54,8 @@ Console.WriteLine("════════════════════�
 
 try
 {
-    var thread = null as AgentThread;
+    AgentThread thread = agent.GetNewThread();
+    // thread = null; //makes the agent forget the conversation history!
 
     var result = await agent.RunAsync("Summarize the last commit of the abpframework/abp repository", thread);
     Console.WriteLine(result.Text);
