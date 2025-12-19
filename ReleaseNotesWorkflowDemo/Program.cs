@@ -1,5 +1,4 @@
 ﻿using System.ClientModel;
-using Azure.AI.OpenAI;
 using Microsoft.Agents.AI;
 using Microsoft.Agents.AI.Workflows;
 using Microsoft.Extensions.AI;
@@ -7,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using OpenAI;
 
 var configuration = new ConfigurationBuilder()
-    .AddUserSecrets<Program>() // Loads user secrets
+    .AddUserSecrets<Program>()
     .Build();
 
 var baseUrl = "https://api.openai.com/v1/";
@@ -19,7 +18,7 @@ var chatClient = new OpenAIClient(
     {
         Endpoint = new Uri(baseUrl),
     }
-).GetChatClient("gpt-5");
+).GetChatClient("gpt-5.2");
 
 //1. Writer Agent
 AIAgent writerAgent = chatClient.CreateAIAgent(
@@ -50,7 +49,7 @@ string rawChanges = """
             - Fix: NullReferenceException in custom executor error path
             """;
 
-// 4. Run the workflow in streaming mode (optional, but nice to show)
+// 4. Run the workflow in streaming mode
 var run = await InProcessExecution.StreamAsync(
     workflow,
     new ChatMessage(ChatRole.User,

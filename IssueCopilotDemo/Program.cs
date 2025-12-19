@@ -1,5 +1,4 @@
 ﻿using System.ClientModel;
-using Azure.AI.OpenAI;
 using Microsoft.Agents.AI;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
@@ -39,7 +38,7 @@ var chatClient = new OpenAIClient(
     {
         Endpoint = new Uri(baseUrl),
     }
-).GetChatClient("gpt-5");
+).GetChatClient("gpt-5.2");
 
 //4. Create AI Agent
 AIAgent agent = chatClient.CreateAIAgent(
@@ -58,13 +57,14 @@ Console.WriteLine("════════════════════�
 try
 {
     AgentThread agentThread = agent.GetNewThread();
-    agentThread = null; //makes the agent forget the conversation history!
+    // agentThread = null; //makes the agent forget the conversation history!
 
     var result = await agent.RunAsync("Summarize the last commit of the abpframework/abp repository!", agentThread);
     Console.WriteLine(result.Text);
 
     Console.WriteLine();
     Console.WriteLine("Last commit author: ");
+
     var result2 = await agent.RunAsync("Who is the last commit author of the abpframework/abp repository? Answer without tool call!", agentThread);
     Console.WriteLine(result2.Text);
 }
